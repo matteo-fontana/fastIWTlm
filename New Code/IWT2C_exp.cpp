@@ -12,7 +12,7 @@
 #include <ctime>
 #include <iomanip>
 
-#define INFO false	// Code flow
+#define INFO true	// Code flow
 #define SHOW false	// Partial esults
 #define TIME true	// Elapsed times
 
@@ -35,8 +35,8 @@ bool check_THREADS (int);
 VectorType compute_T2 (const VectorType &, int, const AlterType &);
 
 //[[Rcpp::export]]
-List IWT2OMP(int B = 1000, AlterType alt = "two.sided", int maxrow = 0,
-             bool paired = false, bool recycle = false, int THREADS = 1) {
+List IWT2C_exp(int B = 1000, AlterType alt = "two.sided", int maxrow = 0,
+             bool paired = false, bool recycle = false, int THREADS = 4) {
 	
 	clock_t tempo10 = clock();
 	

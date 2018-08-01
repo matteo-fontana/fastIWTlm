@@ -12,8 +12,8 @@
 #include <ctime>
 #include <iomanip>
 
-#define INFO false	// Code flow
-#define SHOW false	// Partial esults
+#define INFO true	// Code flow
+#define SHOW true	// Partial esults
 #define TIME true	// Elapsed times
 
 using std::endl;
