@@ -37,7 +37,7 @@ VectorType compute_T2 (const VectorType &, int, const AlterType &);
 
 //[[Rcpp::export]]
 List IWT2C_exp(NumericMatrix Data1, NumericMatrix Data2 , NumericVector Mu, int B = 1000, AlterType alt = "two.sided", int maxrow = 0,
-             bool paired = false, bool recycle = false, int THREADS = 4) {
+             bool paired = false, bool recycle = false, int THREADS = 1) {
 	
 	clock_t tempo10 = clock();
   

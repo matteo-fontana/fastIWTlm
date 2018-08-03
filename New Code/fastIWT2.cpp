@@ -12,9 +12,7 @@
 #include <ctime>
 #include <iomanip>
 
-#define INFO true	// Code flow
-#define SHOW false	// Partial esults
-#define TIME true	// Elapsed times
+#define INFO false	// Code flow
 
 using std::endl;
 using std::max;
@@ -31,15 +29,15 @@ bool check_data (const MatrixType &, const MatrixType &);
 bool check_alt (const AlterType &);
 bool check_B (int);
 bool check_maxrow (int, int);
-bool check_THREADS (int);
+bool check_MPthreads (int);
 
 VectorType compute_T2 (const VectorType &, int, const AlterType &);
 
 //[[Rcpp::export]]
-List IWT2C_exp(NumericMatrix Data1, NumericMatrix Data2 , NumericVector Mu, int B = 1000, AlterType alt = "two.sided", int maxrow = 0,
-             bool paired = false, bool recycle = false, int THREADS = 4) {
+List fastIWT2(NumericMatrix Data1, NumericMatrix Data2 , NumericVector Mu, int B = 1000, AlterType alt = "two.sided", int maxrow = 0,
+             bool paired = false, bool recycle = false, int MPthreads = 1) {
 	
-	clock_t tempo10 = clock();
+
   
   
   //input Matrix Features
@@ -52,41 +50,10 @@ List IWT2C_exp(NumericMatrix Data1, NumericMatrix Data2 , NumericVector Mu, int 
   MatrixType data2 = MatrixType::Map(Data2.begin(),n2,p); 
   VectorType mu = VectorType::Map(Mu.begin(),p);
   
-  
-	
-	// Read dimensions from text file
-	//int n1, n2, p;
-	//std::ifstream Param("Param.txt", std::ifstream::in);
-	//Param >> n1 >> n2 >> p;
-	//Param.close();
-	
-	// Read data1 from text file
-	//MatrixType data1(MatrixType::Zero(n1,p));
-	//std::ifstream Data1("Data1.txt", std::ifstream::in);
-	//for (int i = 0; i < n1; i++)
-	//	for (int j = 0; j < p; j++)
-	//		Data1(i,j) = data1(i,j);
-	//Data1.close();
-	
-	// Read data2 from text file
-	//MatrixType data2(MatrixType::Zero(n2,p));
-	//std::ifstream Data2("Data2.txt", std::ifstream::in);
-	//for (int i = 0; i < n2; i++)
-	//	for (int j = 0; j < p; j++)
-	//		Data2(i,j) = data2(i,j);
-	//Data2.close();
-	
-	// Read mu from text file
-	//VectorType mu(VectorType::Zero(p));
-	//std::ifstream Mean0("Mean0.txt", std::ifstream::in);
-	//for (int j = 0; j < p;  j++)
-	//	Mean0 >> mu(j);
-	//Mean0.close();
-	
 	// Adjust data1 for tilde test
 	for (int i = 0; i < n1; i++) data1.row(i) -= mu;
 	
-	clock_t tempo11 = clock();
+
 	
 	// Check input parameters
 	if (INFO) {
@@ -95,7 +62,7 @@ List IWT2C_exp(NumericMatrix Data1, NumericMatrix Data2 , NumericVector Mu, int 
 		Rcout << "Permutations B\t\t" << check_B(B) << endl;
 		Rcout << "Alternative\t\t" << check_alt(alt) << endl;
 		Rcout << "Truncation maxrow\t" << check_maxrow(maxrow,p) << endl;
-		Rcout << "Number of threads\t" << check_THREADS(THREADS) << endl;
+		Rcout << "Number of threads\t" << check_MPthreads(MPthreads) << endl;
 		if (paired) Rcout << "Paired test allowed\t" << int(n1==n2) << endl;
 	}
 	
@@ -104,16 +71,15 @@ List IWT2C_exp(NumericMatrix Data1, NumericMatrix Data2 , NumericVector Mu, int 
 	
 	VectorType delta0(VectorType::Zero(p));
 	
-	clock_t tempo20 = clock();
-	
+
 	for (int j = 0; j < p; j++)
 		delta0(j) = data1.col(j).mean() - data2.col(j).mean();
 	
 	VectorType T0 (compute_T2(delta0, p, alt));
 	
-	clock_t tempo21 = clock();
+
 	
-	if (SHOW) Rcout << "T0 = [ " << T0.transpose() << "]" << endl;
+	
 	
 	if (INFO) print_mex("End computing T0");
 	
@@ -123,9 +89,9 @@ List IWT2C_exp(NumericMatrix Data1, NumericMatrix Data2 , NumericVector Mu, int 
 	VectorType count(VectorType::Zero(p));
 	MatrixType T_perm(MatrixType::Zero(B,p));
 	
-	clock_t tempo30 = clock();
 	
-    #pragma omp parallel for schedule(static) num_threads(THREADS)
+	
+    #pragma omp parallel for schedule(static) num_threads(MPthreads)
 	for (int b = 0; b < B; b++) {
 		
 		double temp1, temp2;
@@ -202,10 +168,10 @@ List IWT2C_exp(NumericMatrix Data1, NumericMatrix Data2 , NumericVector Mu, int 
 		
 	}
 	
-	clock_t tempo31 = clock();
+	
 	
 	VectorType pvalue_point(count/B);
-	if (SHOW) Rcout << "Pointwise p-values:" << pvalue_point.transpose() << endl;
+
 	
 	if (INFO) print_mex("End computing pointwise p-values");
 	
@@ -214,11 +180,11 @@ List IWT2C_exp(NumericMatrix Data1, NumericMatrix Data2 , NumericVector Mu, int 
 	
 	MatrixType pvalue_inter(MatrixType::Zero(p,p) * R_NaN);
 	
-	clock_t tempo40 = clock();
+	
 	
 	if (recycle==true) {
 		
-		#pragma omp parallel for schedule(dynamic) num_threads(THREADS)
+		#pragma omp parallel for schedule(dynamic) num_threads(MPthreads)
 		for (int i = p - 2; i >= maxrow; i--) {
 			
 			int len(p - i);
@@ -250,7 +216,7 @@ List IWT2C_exp(NumericMatrix Data1, NumericMatrix Data2 , NumericVector Mu, int 
 	}
 	else {
 	    
-		#pragma omp parallel for schedule(dynamic) num_threads(THREADS)
+		#pragma omp parallel for schedule(dynamic) num_threads(MPthreads)
 		for (int i = p - 2; i >= maxrow; i--) {
 			
 			int len(p - i);
@@ -274,18 +240,16 @@ List IWT2C_exp(NumericMatrix Data1, NumericMatrix Data2 , NumericVector Mu, int 
 		}
 	}
 	
-	clock_t tempo41 = clock();
+	
 	
 	pvalue_inter.row(p-1) = pvalue_point;
 	
-	if (SHOW) Rcout << "Intervalwise p-values:" << endl << pvalue_inter << endl;
 	
 	if (INFO) print_mex("End computing intervalwise p-values");
 	
 	// Corrections
 	if (INFO) print_mex("Start computing corrections");
 	
-	clock_t tempo50 = clock();
 	
 	VectorType pvalue_corr(VectorType::Zero(p));
 	double temp_last;
@@ -320,35 +284,17 @@ List IWT2C_exp(NumericMatrix Data1, NumericMatrix Data2 , NumericVector Mu, int 
 			}
 		}
 	}
-	
-	clock_t tempo51 = clock();
-	
-	if (SHOW) Rcout << "Corrected p-values:" << pvalue_corr.transpose() << endl;
-	
+
 	if (INFO) print_mex("End computing corrections");
 	
 	// Elapsed times
-	if (TIME) {
-		int TOT_TIME(tempo51-tempo10);
-		Rcout << "TOTAL\tRead\tT0\tPoint\tInter\tCorr" << endl;
-		Rcout << round(TOT_TIME/CLOCKS_PER_SEC) << "\t"
-			  << round(double(tempo11-tempo10)/CLOCKS_PER_SEC) << "\t"
-			  << round(double(tempo21-tempo20)/CLOCKS_PER_SEC) << "\t"
-			  << round(double(tempo31-tempo30)/CLOCKS_PER_SEC) << "\t"
-			  << round(double(tempo41-tempo40)/CLOCKS_PER_SEC) << "\t"
-			  << round(double(tempo51-tempo50)/CLOCKS_PER_SEC) << endl;
-	}
 	
 	List RES;
-	RES["T0"]    = T0;
-	RES["point"] = pvalue_point;
+	RES["T0_stat"]    = T0;
+	RES["unadj_pval"] = pvalue_point;
 	RES["inter"] = pvalue_inter;
-	RES["corre"] = pvalue_corr;
+	RES["adj_pval"] = pvalue_corr;
 	return RES;
-}
-
-void print_mex (const std::string & s){
-	Rcout << endl << "*** " << s << " ***" << endl << endl;
 }
 
 bool check_data (const MatrixType & d1, const MatrixType & d2) {
@@ -371,7 +317,7 @@ bool check_maxrow (int m, int p) {
 	return (m >= 0 && m < p);
 }
 
-bool check_THREADS (int T) {
+bool check_MPthreads (int T) {
 	return (T > 0);
 }
 
