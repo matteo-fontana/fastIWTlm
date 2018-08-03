@@ -12,9 +12,9 @@
 #include <ctime>
 #include <iomanip>
 
-#define INFO true	// Code flow
-#define SHOW true	// Partial esults
-#define TIME true	// Elapsed times
+#define INFO false	// Code flow
+#define SHOW false	// Partial esults
+#define TIME false	// Elapsed times
 
 using std::endl;
 using std::max;
