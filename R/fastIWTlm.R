@@ -2,11 +2,12 @@
 # IWTlmpointwise(formula)
 # formula: oggetto di tipo formula. 
 # Esempio con due covariate: IWTlmFoF(y ~ x1 + x2)
-# dove y è un dataset funzionale (matrice n*p)
+# dove y e' un dataset funzionale (matrice n*p)
 # x1 e x2 possono essere funzionali (matrici n*p) o scalari (vettori n)
 # il test dell'interazione tra covariate scalari e funzionali (tipo y ~ x1*x2) non funziona, per ora va fatto a mano costruendo le covariate dummy
-fastIWTlm <- function(formula,B=1000,method='residuals'){
- 
+fastIWTlm <- function(formula,B=1000,method='residuals',engine=c('R','rcpp'),threads=1){
+  engine <- match.arg(engine)
+
    pval.correct <- function(pval.matrix){
     matrice_pval_2_2x <- cbind(pval.matrix,pval.matrix)
     p <- dim(pval.matrix)[2]
@@ -149,6 +150,40 @@ fastIWTlm <- function(formula,B=1000,method='residuals'){
   T_glob <- matrix(ncol=p,nrow=B)
   T_part = array(dim=c(B,nvar+1,p))
   
+  ## Fast path: dispatch the (dominant) permutation loop to the parallel
+  ## RcppEigen kernel. Supported for nvar > 0 (both methods); intercept-only
+  ## models (sign-flip permutations) fall back to the pure-R loop below.
+  use_rcpp <- engine == 'rcpp' && nvar > 0
+  if(engine == 'rcpp' && nvar == 0)
+    warning("engine='rcpp' is not supported for intercept-only models; using the R engine.")
+
+  if(use_rcpp){
+    ## Per-point design matrices are FIXED across permutations; pass them once.
+    Xlist <- lapply(design.matrix, function(dm){
+      m <- as.matrix(dm$design.matrix); storage.mode(m) <- 'double'; m })
+    Ymat <- as.matrix(coeff); storage.mode(Ymat) <- 'double'
+    ## One shared permutation matrix (B x n), reproducing the R loop's reuse of
+    ## `permutazioni` for both the global and the partial (residuals) tests.
+    PermMat <- matrix(0L, nrow = B, ncol = n)
+    for(perm in 1:B) PermMat[perm, ] <- sample(n)
+    storage.mode(PermMat) <- 'integer'
+
+    if(method == 'residuals'){
+      fittedList <- lapply(1:(nvar+1), function(ii){
+        m <- matrix(fitted_part[ii,,], nrow = n, ncol = p); storage.mode(m) <- 'double'; m })
+      residList  <- lapply(1:(nvar+1), function(ii){
+        m <- matrix(residui[ii,,], nrow = n, ncol = p); storage.mode(m) <- 'double'; m })
+      mflag <- 1L
+    }else{ # 'responses'
+      fittedList <- list(); residList <- list(); mflag <- 0L
+    }
+
+    res <- fastIWTlm_perm(Xlist, Ymat, PermMat, mflag,
+                          fittedList, residList,
+                          as.integer(nvar), as.integer(threads))
+    T_glob <- res$T_glob
+    T_part <- res$T_part
+  }else{
   for (perm in 1:B){
     # the F test is the same for both methods
     if(nvar >0){
@@ -166,20 +201,20 @@ fastIWTlm <- function(formula,B=1000,method='residuals'){
       design.matrix.perm[[jj]]$design.matrix <- cbind(design.matrix.scalar,design.matrix.functional)
       design.matrix.perm[[jj]]$y <- coeff_perm[,jj]
     }
-    
+
     regr_perm = lapply(design.matrix.perm,lm.fit.mod,var.keep=1:(nvar+1))
-    
+
     if(nvar > 0)
       T_glob[perm,] <- sapply(regr_perm,calculateTglob,nvar=nvar)
-    
+
     # partial tests: differ depending on the method
     if(method=='responses'){
       T_part[perm,,] <- sapply(regr_perm,calculateTpart,nvar=nvar)
     }else if(method=='residuals'){
       residui_perm = residui[,permutazioni,]
       regr_perm_part = vector('list',nvar+1)
-      for(ii in 1:(nvar+1)){ 
-        coeff_perm = fitted_part[ii,,] + residui_perm[ii,,] 
+      for(ii in 1:(nvar+1)){
+        coeff_perm = fitted_part[ii,,] + residui_perm[ii,,]
         design.matrix.perm <- list(J)
         for(jj in 1:J){
           design.matrix.scalar <- design.matrix.temp[,index.scalar]
@@ -193,7 +228,8 @@ fastIWTlm <- function(formula,B=1000,method='residuals'){
       }
     }
   }
-  
+  }
+
   pval_glob <- numeric(p)
   pval_part = matrix(nrow=nvar+1,ncol=p)
   for(i in 1:p){

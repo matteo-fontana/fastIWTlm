@@ -1,5 +1,7 @@
 #include <RcppEigen.h>
+#ifdef _OPENMP
 #include <omp.h>
+#endif
 
 // [[Rcpp::depends(RcppEigen)]]
 // [[Rcpp::plugins(openmp)]]
@@ -34,7 +36,7 @@ bool check_MPthreads (int);
 VectorType compute_T2 (const VectorType &, int, const AlterType &);
 
 //[[Rcpp::export]]
-List fastIWT2(NumericMatrix Data1, NumericMatrix Data2 , NumericVector Mu, int B = 1000, AlterType alt = "two.sided", int maxrow = 0,
+List fastIWT2(NumericMatrix Data1, NumericMatrix Data2 , NumericVector Mu, int B = 1000, std::string alt = "two.sided", int maxrow = 0,
              bool paired = false, bool recycle = false, int MPthreads = 1) {
 	
 

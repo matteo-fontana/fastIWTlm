@@ -1,0 +1,36 @@
+# Hand-written NAMESPACE (package has no roxygen-generated tags).
+# After any change, regenerate/verify with roxygen2::roxygenise() is NOT
+# required because there are no @ tags; edit this file directly.
+
+useDynLib(fastIWTlm, .registration = TRUE)
+
+importFrom(Rcpp, sourceCpp)
+
+## ggplot2 (plotting layer) + the autoplot generic (re-exported so callers can
+## use autoplot() after only library(fastIWTlm), the standard ggplot2 pattern)
+import(ggplot2)
+importFrom(ggplot2, autoplot)
+export(autoplot)
+
+## data.table (used by the plotting layer)
+import(data.table)
+
+## base pkgs
+importFrom(stats, model.matrix, model.frame, model.response, terms,
+           lm.fit, rbinom, coef, na.omit)
+importFrom(graphics, abline, axis, image, layout, lines, matplot, par,
+           plot, rect)
+importFrom(grDevices, rainbow, devAskNewPage)
+importFrom(utils, globalVariables)
+
+## exported functions
+export(fastIWTlm)
+export(fastIWT2)
+export(IWT2)
+export(IWTimage)
+export(arrange_IWTlm)
+
+## S3 methods
+S3method(summary, IWTlm)
+S3method(autoplot, IWTlm)
+S3method(plot, IWTlm)

@@ -1,0 +1,36 @@
+Package: fastIWTlm
+Type: Package
+Title: Fast Interval-Wise Testing for Functional Regression with ggplot2 Visualisation
+Version: 0.1.0
+Authors@R: c(
+    person("Matteo", "Fontana", email = "mtt.fnt@gmail.com", role = c("aut", "cre")),
+    person("fastIWTlm", "contributors", role = "ctb"))
+Description: Interval-Wise Testing (IWT) for functional data. Provides
+    functional-on-scalar and functional-on-functional regression via
+    'fastIWTlm()', a high-performance C++/Rcpp permutation engine for the
+    two-sample problem via 'fastIWT2()' (RcppEigen, OpenMP-parallelised), a
+    pure-R two-sample implementation 'IWT2()', base-graphics heatmaps via
+    'IWTimage()', and a 'ggplot2'-based visualisation layer for 'IWTlm'
+    objects ('autoplot.IWTlm()' and 'arrange_IWTlm()'). The permutation loop
+    of 'fastIWTlm()' can optionally be dispatched to a parallel RcppEigen
+    kernel via 'engine = "rcpp"'. This package merges the former 'fastIWTlm'
+    (computation) and 'IWTgg' (plotting) repositories.
+License: GPL-3
+Encoding: UTF-8
+LinkingTo: Rcpp, RcppEigen
+Imports:
+    Rcpp,
+    ggplot2,
+    data.table,
+    stats,
+    graphics,
+    grDevices,
+    utils
+Suggests:
+    RcppEigen,
+    gridExtra,
+    ggpubr,
+    mvtnorm
+SystemRequirements: GNU make
+NeedsCompilation: yes
+RoxygenNote: 7.2.3

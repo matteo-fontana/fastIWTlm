@@ -1,7 +1,7 @@
 # Heatmap plots
 
 IWTimage = function (IWT_result, alpha = 0.05, abscissa_range = c(0,1),
-                     nlevel = 20, plot_unadjusted = F) {
+                     nlevel = 20, plot_unadjusted = FALSE) {
     
     min_ascissa = abscissa_range[1] - (abscissa_range[2] - abscissa_range[1]) / 2
     max_ascissa = abscissa_range[2] + (abscissa_range[2] - abscissa_range[1]) / 2
