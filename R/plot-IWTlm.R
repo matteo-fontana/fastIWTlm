@@ -36,12 +36,12 @@
 # coefficients report the gray areas corresponding to significant t-tests for the corresponding 
 # covariate.
 
-autoplot.IWTlm <- function(IWTlmModel,
-                           
-                      prompt=T,
-                       save_output=F,
-                       layout_vertical=F,
-                       xrange = c(0,1), 
+autoplot.IWTlm <- function(object,
+
+                      prompt=TRUE,
+                       save_output=FALSE,
+                       layout_vertical=FALSE,
+                       xrange = c(0,1),
                        alpha1 = 0.05, 
                        alpha2 = 0.01, 
                        plot_adjpval = FALSE,
@@ -56,7 +56,7 @@ autoplot.IWTlm <- function(IWTlmModel,
                        cextotal=NULL,
                        ...) {
   
-  if (!inherits(IWTlmModel, "IWTlm")) stop("IWTlmModel should be an object of the class IWTlm")
+  if (!inherits(object, "IWTlm")) stop("object should be of the class IWTlm")
   if (alpha1 < alpha2) {
     temp <- alpha1
     alpha1 <- alpha2
@@ -66,7 +66,6 @@ autoplot.IWTlm <- function(IWTlmModel,
     warning('Plotting unadjusted p-values only is not recommended since domain selection is performed with adjusted p-values. The plots will include also adjusted p-values.')
     plot_adjpval = TRUE
   }
-  object <- IWTlmModel
   p <- length(object$unadjusted_pval_F)
   J <- p
   n <- dim(object$data.eval)[1]

@@ -1,5 +1,5 @@
-IWT2 = function (data1, data2, mu = 0, B = 1000, maxrow = 1, paired = F,
-                 recycle = F, alternative = 'two.sided') {
+IWT2 = function (data1, data2, mu = 0, B = 1000, maxrow = 1, paired = FALSE,
+                 recycle = FALSE, alternative = 'two.sided') {
     
     # Alternative
     possible_alternatives = c('two.sided', 'greater', 'less')

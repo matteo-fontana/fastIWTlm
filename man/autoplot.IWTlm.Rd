@@ -1,6 +1,7 @@
 \name{autoplot.IWTlm}
 \alias{autoplot.IWTlm}
 \alias{plot.IWTlm}
+\alias{autoplot}
 \title{ggplot2 Visualisation of IWTlm Objects}
 \description{
   Produces \pkg{ggplot2} graphics for an \code{"IWTlm"} object returned by
@@ -10,7 +11,7 @@
   is a convenience alias dispatching to \code{autoplot.IWTlm}.
 }
 \usage{
-\method{autoplot}{IWTlm}(IWTlmModel, prompt = TRUE, save_output = FALSE,
+\method{autoplot}{IWTlm}(object, prompt = TRUE, save_output = FALSE,
         layout_vertical = FALSE, xrange = c(0, 1), alpha1 = 0.05,
         alpha2 = 0.01, plot_adjpval = FALSE, plot_unadjpval = FALSE,
         ylim = NULL, ylimcoeff = NULL, ylab = "Functional Data",
@@ -20,7 +21,7 @@
 \method{plot}{IWTlm}(x, ...)
 }
 \arguments{
-  \item{IWTlmModel, x}{an object of class \code{"IWTlm"}.}
+  \item{object, x}{an object of class \code{"IWTlm"}.}
   \item{prompt}{logical; ask before drawing each successive plot.}
   \item{save_output}{logical; if \code{TRUE}, return the list of
     \code{ggplot} objects (for use with \code{\link{arrange_IWTlm}})

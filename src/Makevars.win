@@ -1,5 +1,4 @@
-## OpenMP + C++11 for the RcppEigen kernels (fastIWT2, fastIWTlm_perm).
+## OpenMP for the RcppEigen kernels (fastIWT2, fastIWTlm_perm).
 ## RcppEigen headers come from LinkingTo in DESCRIPTION.
-CXX_STD = CXX11
 PKG_CXXFLAGS = $(SHLIB_OPENMP_CXXFLAGS)
 PKG_LIBS = $(SHLIB_OPENMP_CXXFLAGS)
