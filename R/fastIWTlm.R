@@ -1,10 +1,11 @@
-# uso:
-# IWTlmpointwise(formula)
-# formula: oggetto di tipo formula. 
-# Esempio con due covariate: IWTlmFoF(y ~ x1 + x2)
-# dove y e' un dataset funzionale (matrice n*p)
-# x1 e x2 possono essere funzionali (matrici n*p) o scalari (vettori n)
-# il test dell'interazione tra covariate scalari e funzionali (tipo y ~ x1*x2) non funziona, per ora va fatto a mano costruendo le covariate dummy
+# Interval-wise testing for functional linear models. Adapted from R code by
+# Alessia Pini, which builds on ITPlmbspline() in the fdatest package by
+# Alessia Pini and Simone Vantini.
+#
+# Usage: fastIWTlm(y ~ x1 + x2), where y is a functional dataset (n x p matrix)
+# and x1, x2 are functional (n x p matrices) or scalar (length-n vectors).
+# Interactions between scalar and functional covariates (y ~ x1*x2) are not
+# supported: build the product covariates by hand.
 fastIWTlm <- function(formula,B=1000,method='residuals',engine=c('R','rcpp'),threads=1){
   engine <- match.arg(engine)
 

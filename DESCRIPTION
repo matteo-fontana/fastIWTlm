@@ -1,18 +1,23 @@
 Package: fastIWTlm
 Type: Package
-Title: Fast Interval-Wise Testing for Functional Regression with ggplot2 Visualisation
+Title: Fast Interval-Wise Testing for Functional Linear Models
 Version: 0.1.0
 Authors@R: c(
     person("Matteo", "Fontana", email = "mtt.fnt@gmail.com", role = c("aut", "cre")),
-    person("fastIWTlm", "contributors", role = "ctb"))
-Description: Interval-Wise Testing (IWT) for functional regression.
-    Provides functional-on-scalar and functional-on-functional regression
-    via 'fastIWTlm()' and a 'ggplot2'-based visualisation layer for 'IWTlm'
-    objects ('autoplot.IWTlm()' and 'arrange_IWTlm()'). The permutation loop
-    of 'fastIWTlm()' can optionally be dispatched to a parallel 'RcppEigen'
-    kernel via 'engine = "rcpp"'. One- and two-sample interval-wise tests
-    are provided by the companion package 'fdatestcpp'
-    (<https://github.com/matteo-fontana/fdatestcpp>).
+    person("Alessia", "Pini", role = c("aut", "cph"),
+           comment = "R code from which 'fastIWTlm()' is adapted"),
+    person("Simone", "Vantini", role = c("aut", "cph"),
+           comment = "co-author of the 'fdatest' code that code builds on"),
+    person("Aymeric", "Stamm", role = "ctb",
+           comment = "maintainer of 'fdatest'"))
+Description: Interval-wise testing (Pini and Vantini (2017)
+    <doi:10.1080/10485252.2017.1306627>; Abramowicz et al. (2018)
+    <doi:10.1111/sjos.12333>) for linear models with a functional response
+    and scalar or functional (concurrent) covariates. 'fastIWTlm()' gives
+    the global F test and the partial t tests as functions over the domain,
+    with p-values adjusted to control the interval-wise error rate. Its
+    permutation loop can run in a parallel 'RcppEigen' kernel. Results can
+    be summarised and plotted with 'ggplot2'.
 License: GPL-3
 Encoding: UTF-8
 LinkingTo: Rcpp, RcppEigen
