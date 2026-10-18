@@ -18,16 +18,12 @@ import(data.table)
 ## base pkgs
 importFrom(stats, model.matrix, model.frame, model.response, terms,
            lm.fit, rbinom, coef, na.omit)
-importFrom(graphics, abline, axis, image, layout, lines, matplot, par,
-           plot, rect)
+importFrom(graphics, par, plot)
 importFrom(grDevices, rainbow, devAskNewPage)
 importFrom(utils, globalVariables)
 
 ## exported functions
 export(fastIWTlm)
-export(fastIWT2)
-export(IWT2)
-export(IWTimage)
 export(arrange_IWTlm)
 
 ## S3 methods

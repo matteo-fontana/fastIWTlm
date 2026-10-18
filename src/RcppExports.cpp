@@ -11,25 +11,6 @@ Rcpp::Rostream<true>&  Rcpp::Rcout = Rcpp::Rcpp_cout_get();
 Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
 #endif
 
-// fastIWT2
-List fastIWT2(NumericMatrix Data1, NumericMatrix Data2, NumericVector Mu, int B, std::string alt, int maxrow, bool paired, bool recycle, int MPthreads);
-RcppExport SEXP _fastIWTlm_fastIWT2(SEXP Data1SEXP, SEXP Data2SEXP, SEXP MuSEXP, SEXP BSEXP, SEXP altSEXP, SEXP maxrowSEXP, SEXP pairedSEXP, SEXP recycleSEXP, SEXP MPthreadsSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< NumericMatrix >::type Data1(Data1SEXP);
-    Rcpp::traits::input_parameter< NumericMatrix >::type Data2(Data2SEXP);
-    Rcpp::traits::input_parameter< NumericVector >::type Mu(MuSEXP);
-    Rcpp::traits::input_parameter< int >::type B(BSEXP);
-    Rcpp::traits::input_parameter< std::string >::type alt(altSEXP);
-    Rcpp::traits::input_parameter< int >::type maxrow(maxrowSEXP);
-    Rcpp::traits::input_parameter< bool >::type paired(pairedSEXP);
-    Rcpp::traits::input_parameter< bool >::type recycle(recycleSEXP);
-    Rcpp::traits::input_parameter< int >::type MPthreads(MPthreadsSEXP);
-    rcpp_result_gen = Rcpp::wrap(fastIWT2(Data1, Data2, Mu, B, alt, maxrow, paired, recycle, MPthreads));
-    return rcpp_result_gen;
-END_RCPP
-}
 // fastIWTlm_perm
 List fastIWTlm_perm(List Xlist, NumericMatrix Y, IntegerMatrix PermMat, int method_residuals, List fittedPart, List residPart, int nvar, int threads);
 RcppExport SEXP _fastIWTlm_fastIWTlm_perm(SEXP XlistSEXP, SEXP YSEXP, SEXP PermMatSEXP, SEXP method_residualsSEXP, SEXP fittedPartSEXP, SEXP residPartSEXP, SEXP nvarSEXP, SEXP threadsSEXP) {
@@ -50,7 +31,6 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_fastIWTlm_fastIWT2", (DL_FUNC) &_fastIWTlm_fastIWT2, 9},
     {"_fastIWTlm_fastIWTlm_perm", (DL_FUNC) &_fastIWTlm_fastIWTlm_perm, 8},
     {NULL, NULL, 0}
 };

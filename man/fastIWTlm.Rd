@@ -40,7 +40,9 @@ fastIWTlm(formula, B = 1000, method = "residuals",
   and \code{\link{autoplot.IWTlm}} to inspect it.
 }
 \seealso{\code{\link{summary.IWTlm}}, \code{\link{autoplot.IWTlm}},
-  \code{\link{arrange_IWTlm}}, \code{\link{fastIWT2}}}
+  \code{\link{arrange_IWTlm}}; \pkg{fdatestcpp}
+  (\url{https://github.com/matteo-fontana/fdatestcpp}) for one- and
+  two-sample interval-wise tests.}
 \examples{
 \dontrun{
 load(system.file("extdata", "test_data_IWTlm.rdata", package = "fastIWTlm"))
