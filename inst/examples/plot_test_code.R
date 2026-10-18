@@ -1,4 +1,4 @@
-## Plotting layer (merged from the former IWTgg repository).
+## Plotting an IWTlm fit with ggplot2.
 
 library(fastIWTlm)
 

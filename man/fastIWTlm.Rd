@@ -40,9 +40,23 @@ fastIWTlm(formula, B = 1000, method = "residuals",
   and \code{\link{autoplot.IWTlm}} to inspect it.
 }
 \seealso{\code{\link{summary.IWTlm}}, \code{\link{autoplot.IWTlm}},
-  \code{\link{arrange_IWTlm}}; \pkg{fdatestcpp}
-  (\url{https://github.com/matteo-fontana/fdatestcpp}) for one- and
-  two-sample interval-wise tests.}
+  \code{\link{arrange_IWTlm}}}
+\references{
+  Pini, A. and Vantini, S. (2017). Interval-wise testing for functional
+  data. \emph{Journal of Nonparametric Statistics}, 29(2), 407--424.
+  \doi{10.1080/10485252.2017.1306627}
+
+  Abramowicz, K., Hager, C. K., Pini, A., Schelin, L., Sjostedt de Luna, S.
+  and Vantini, S. (2018). Nonparametric inference for functional-on-scalar
+  linear models applied to knee kinematic hop data after injury of the
+  anterior cruciate ligament. \emph{Scandinavian Journal of Statistics},
+  45(4), 1036--1061. \doi{10.1111/sjos.12333}
+}
+\author{
+  Adapted by Matteo Fontana from R code by Alessia Pini, which builds on
+  \code{ITPlmbspline()} in \pkg{fdatest} by Alessia Pini and Simone
+  Vantini.
+}
 \examples{
 \dontrun{
 load(system.file("extdata", "test_data_IWTlm.rdata", package = "fastIWTlm"))

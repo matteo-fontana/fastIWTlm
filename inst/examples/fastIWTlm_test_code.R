@@ -18,5 +18,5 @@ set.seed(1); m_cpp <- fastIWTlm(f, B = 500, engine = "rcpp", threads = 4)
 stopifnot(isTRUE(all.equal(m_R$adjusted_pval_part, m_cpp$adjusted_pval_part,
                            tol = 1e-8)))
 
-## Visualise (merged plotting layer)
+## Visualise
 autoplot(test_model)
